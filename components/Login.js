@@ -21,36 +21,41 @@ const LoginScreen = ({route, navigation}) => {
 
     return (
         
-        <View>
-            <Text>{mensagemLogin}</Text>
+        <View style={styles.container}>
+            <Text style={styles.title1}>{mensagemLogin}</Text>
             <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
                 // value={email}
                 placeholder="Email"
-                keyboardType="text"
+                
             />
             <TextInput
                 style={styles.input}
                 onChangeText={setSenha}
                 // value={senha}
                 placeholder="Senha"
-                keyboardType="text"
+                secureTextEntry
             />
             <ButtonPersonalizado
                 title="Logar"
                 onPress={() =>
                     usuarioService.logarComEmailESenha(auth, email, senha, (resposta) => {
-                        setMensagemLogin(resposta)
-                        if(resposta == "Logado com Sucesso!") navigation.navigate('Moradias')
+                        if(resposta == true){
+                            setMensagemLogin("")
+                            navigation.navigate('Sua Moradia')
+                        }else{
+                            setMensagemLogin(resposta)
+                        }
                     })
                 }
             />
-            <Text style={{textAlign: 'center', fontSize: 30}}>Não possuo conta</Text>
+            <Text style={{textAlign: 'center', fontSize: 30}}>Não possui conta?</Text>
             <ButtonPersonalizado 
-                title="Registrar-se"
-                onPress={() =>
-                navigation.navigate('Cadastro Usuário')
+                title="Registrar-se já"
+                onPress={() => {
+                    navigation.navigate('Cadastro Usuário')
+                }
             }/>
         </View>
     );

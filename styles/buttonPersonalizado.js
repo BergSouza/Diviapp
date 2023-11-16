@@ -5,7 +5,7 @@ const styleButton = StyleSheet.create({
         height: 50,
         width: 300,
         alignSelf: 'center',
-        backgroundColor: '#0fe',
+        backgroundColor: '#088',
         marginTop: 5,
         marginBottom: 5,
         borderRadius: 10,
@@ -14,6 +14,7 @@ const styleButton = StyleSheet.create({
     textButton: {
         fontSize: 30,
         textAlign: 'center',
+        color: 'white',
     }
   });
 

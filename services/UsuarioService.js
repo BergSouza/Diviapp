@@ -43,7 +43,7 @@ class UsuarioService{
         .then((userCredential) => {
             const user = userCredential.user;
             console.log("LOGADO COM SUCESSO!")
-            callback("Logado com Sucesso!")
+            callback(true)
         })
         .catch((error) => {
             const errorCode = error.code;

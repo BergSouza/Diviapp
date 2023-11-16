@@ -21,8 +21,6 @@ const moradiaService = new MoradiaService
 const ListaMoradiasScreen = ({route, navigation}) => {
 
     const [moradias, setMoradias] = useState([])
-    const [usuarioMoradia, setUsuarioMoradia] = useState({})
-    const [usuarioMoradiaBool, setUsuarioMoradiaBool] = useState(false)
     const [carregado, setCarregado] = useState(false)
 
     useEffect(() => {
@@ -35,55 +33,32 @@ const ListaMoradiasScreen = ({route, navigation}) => {
         
         console.log("moradias")
         console.log(moradias)
-
-        moradiaService.buscaMoradiaUsuario(db, auth.currentUser.uid, (resposta) => {
-            setUsuarioMoradia(resposta)
-            try{
-                resposta.userId != ""
-                setUsuarioMoradiaBool(true)
-            }catch{
-
-            }
-            
-            console.log("MORADIA DO CIDADAO:")
-            console.log(resposta)
-            setCarregado(true)
-        })
+        setCarregado(true)
                 
     }, [])
     
     return (
         carregado ?
-        <View>
-            <Text>Você está logado!</Text>
+        <View style={styles.container}>
             {moradias.length > 0 ? moradias.map((moradia, key) => {
                 return (
                     <View key={key}>
-                        <Text>Bairro: {moradia.bairro}</Text>
-                        <Text>Rua: {moradia.rua}</Text>
-                        <Text>Número: {moradia.numero}</Text>
-                        <Text>Capacidade: {moradia.capacidade}</Text>
-                        <Text>Aluguel: {moradia.aluguel}</Text>
-                        <Text>------------------------------------------------------------------</Text>
+                        <Text style={styles.p1}>Estado: {moradia.estado}</Text>
+                        <Text style={styles.p1}>Cidade: {moradia.cidade}</Text>
+                        <Text style={styles.p1}>Bairro: {moradia.bairro}</Text>
+                        <Text style={styles.p1}>Rua: {moradia.rua}</Text>
+                        <Text style={styles.p1}>Número: {moradia.numero}</Text>
+                        <Text style={styles.p1}>Capacidade: {moradia.capacidade}</Text>
+                        <Text style={styles.p1}>Aluguel: {moradia.aluguel}</Text>
+                        <Text style={styles.p1}>------------------------------------------------------------------</Text>
                     </View>
                 );
-            }) : <Text>Carregando</Text>} 
-            {
-            usuarioMoradiaBool ? <ButtonPersonalizado
-            title="Editar Endereço"
-            onPress={ () => console.log("editar moradia") /*navigation.navigate('Editar Moradia')*/ }
-            /> : <ButtonPersonalizado
-            title="Adicionar Endereço"
-            onPress={ () => navigation.navigate('Cadastrar Moradia') }
-            /> 
-            }
-            <ButtonPersonalizado
-            title="Sair"
-            onPress={ () => usuarioService.deslogarUsuario(auth, (resposta) => {
-                if(resposta) navigation.navigate('Login');
-            })}
-            />
+            }) : <Text style={styles.title1}>Carregando</Text>}
             
+            <ButtonPersonalizado
+            title="Voltar"
+            onPress={ () => navigation.goBack() }
+            /> 
         </View>
         :
         <View>

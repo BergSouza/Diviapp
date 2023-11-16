@@ -19,21 +19,20 @@ const CadastrarUsuarioScreen  = ({route, navigation}) => {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     return (
-        <View>
-            <Text>{mensagemLogin}</Text>
+        <View style={styles.container}>
+            <Text style={styles.title1}>{mensagemLogin}</Text>
             <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
                 // value={email}
                 placeholder="Email"
-                keyboardType="text"
             />
             <TextInput
                 style={styles.input}
                 onChangeText={setSenha}
                 // value={senha}
                 placeholder="Senha"
-                keyboardType="text"
+                secureTextEntry
             />
         <ButtonPersonalizado
             title="Cadastrar"
