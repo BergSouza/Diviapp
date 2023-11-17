@@ -23,6 +23,7 @@ const LoginScreen = ({route, navigation}) => {
         
         <View style={styles.container}>
             <Text style={styles.title1}>{mensagemLogin}</Text>
+            <Text style={styles.label}> Email:</Text>
             <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
@@ -30,6 +31,7 @@ const LoginScreen = ({route, navigation}) => {
                 placeholder="Email"
                 
             />
+            <Text style={styles.label}> Senha:</Text>
             <TextInput
                 style={styles.input}
                 onChangeText={setSenha}
@@ -50,6 +52,19 @@ const LoginScreen = ({route, navigation}) => {
                     })
                 }
             />
+            <Text style={{textAlign: 'center', fontSize: 30}}>Esqueceu sua senha?</Text>
+            <ButtonPersonalizado 
+                title="Resetar senha"
+                onPress={() => {
+                    usuarioService.enviarEmailEsqueciSenha(auth, email, (resposta) => {
+                        if(resposta == true){
+                            setMensagemLogin("Email de redefinição enviado!")
+                        }else{
+                            setMensagemLogin(resposta)
+                        }
+                    })
+                }
+            }/>
             <Text style={{textAlign: 'center', fontSize: 30}}>Não possui conta?</Text>
             <ButtonPersonalizado 
                 title="Registrar-se já"

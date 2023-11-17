@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "firebase/auth";
 
 class UsuarioService{
     estadoAutenticacaoMudou(auth){
@@ -17,15 +17,13 @@ class UsuarioService{
         .then((userCredential) => {
             const user = userCredential.user;
             console.log("CADASTRADO COM SUCESSO!")
-            // callback(userCredential)
-            callback("CADASTRADO COM SUCESSO!")
+            callback(true)
             })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             // console.log("ERRO AO CADASTRAR: "+errorMessage)
             
-            // callback(error)
             if(errorMessage == "Firebase: Error (auth/invalid-email)."){
                 callback("Email Inválido");
             }
@@ -68,6 +66,25 @@ class UsuarioService{
         .catch(function(error) {
             // An error happened
             console.log("Erro ao desloga!");
+        });
+    }
+
+    enviarEmailEsqueciSenha(auth, email, callback){
+        sendPasswordResetEmail(auth, email)
+        .then(() => {
+            callback(true)
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // ..
+            // console.log(errorMessage)
+            if(errorMessage == "Firebase: Error (auth/missing-email)."){
+                callback("Digite um Email!")
+            }
+            if(errorMessage == "Firebase: Error (auth/invalid-email)."){
+                callback("Email Inválido!")
+            }
         });
     }
 }

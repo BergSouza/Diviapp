@@ -49,7 +49,7 @@ const ListaMoradiasScreen = ({route, navigation}) => {
                         <Text style={styles.p1}>Rua: {moradia.rua}</Text>
                         <Text style={styles.p1}>Número: {moradia.numero}</Text>
                         <Text style={styles.p1}>Capacidade: {moradia.capacidade}</Text>
-                        <Text style={styles.p1}>Aluguel: {moradia.aluguel}</Text>
+                        <Text style={styles.p1}>Aluguel: R$ {moradia.aluguel}</Text>
                         <Text style={styles.p1}>------------------------------------------------------------------</Text>
                     </View>
                 );

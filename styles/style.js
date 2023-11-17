@@ -3,7 +3,8 @@ import {StyleSheet} from 'react-native'
 const styles = StyleSheet.create({
     container: {
         paddingLeft: 20,
-        paddingRight: 20
+        paddingRight: 20,
+        paddingTop: 50,
     },
     title: {
         fontSize: 50,
@@ -63,6 +64,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 22,
       },
+      label: {
+        fontSize: 25,
+        marginLeft: 10,
+        color: 'rgba(0,0,0,0.5)'
+      }
 });
 
 export default styles;

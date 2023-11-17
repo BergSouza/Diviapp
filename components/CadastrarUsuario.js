@@ -21,16 +21,18 @@ const CadastrarUsuarioScreen  = ({route, navigation}) => {
     return (
         <View style={styles.container}>
             <Text style={styles.title1}>{mensagemLogin}</Text>
+            <Text style={styles.label}> Email:</Text>
             <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
-                // value={email}
+                value={email}
                 placeholder="Email"
             />
+            <Text style={styles.label}> Senha:</Text>
             <TextInput
                 style={styles.input}
                 onChangeText={setSenha}
-                // value={senha}
+                value={senha}
                 placeholder="Senha"
                 secureTextEntry
             />
@@ -39,7 +41,9 @@ const CadastrarUsuarioScreen  = ({route, navigation}) => {
             onPress={() =>
                 usuarioService.criarUsuarioComEmailESenha(auth, email, senha, (resposta) => {
                     setMensagemLogin(resposta)
-                    navigation.navigate('Moradias')
+                    if(resposta == true){
+                        navigation.navigate('Sua Moradia')
+                    }
                 })
             }
         />

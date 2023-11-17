@@ -18,23 +18,28 @@ const db = getFirestore(app);
 const usuarioService = new UsuarioService
 const moradiaService = new MoradiaService    
     
-const ListaMoradiasScreen = ({route, navigation}) => {
+const MenuScreen = ({route, navigation}) => {
 
     const [usuarioMoradia, setUsuarioMoradia] = useState(null)
     const [carregado, setCarregado] = useState(false)
     const [modalExcluirVisible, setModalExcluirVisible] = useState(false)
-
+    
     useEffect(() => {
-        if(!usuarioService.estadoAutenticacaoMudou){
-            navigation.navigate('Login');
-        }
-
-        moradiaService.buscaMoradiaUsuario(db, auth.currentUser.uid, (resposta) => {
-            setUsuarioMoradia(resposta)
-            setCarregado(true)
-        })
-                
-    }, [])
+        const subscribeFocus = navigation.addListener('focus', () => {
+            if(!usuarioService.estadoAutenticacaoMudou){
+                navigation.navigate('Login');
+            }
+            moradiaService.buscaMoradiaUsuario(db, auth.currentUser.uid, (resposta) => {
+                setUsuarioMoradia(resposta)
+                if(resposta == ""){
+                    navigation.navigate('Procurar Moradia')
+                }else{
+                    setCarregado(true)
+                }
+            });
+        });
+        return subscribeFocus;
+      }, []);
     
     return (
         carregado ?
@@ -54,7 +59,9 @@ const ListaMoradiasScreen = ({route, navigation}) => {
                         title="Confirmar"
                         onPress={ () => 
                             {
-                                console.log("excluir moradia") /*navigation.navigate('Moradia')*/
+                                moradiaService.deletarMoradia(db, usuarioMoradia.idDoc, (resposta) => {
+                                    if(resposta) navigation.navigate('Procurar Moradia')
+                                })
                                 setModalExcluirVisible(!modalExcluirVisible)
                             }
                         }
@@ -67,24 +74,21 @@ const ListaMoradiasScreen = ({route, navigation}) => {
                 </View>
             </Modal>
             { 
-            usuarioMoradia != "" ? 
-                <View>
-                    <Text style={styles.p1}>Estado: {usuarioMoradia.estado}</Text>
-                    <Text style={styles.p1}>Cidade: {usuarioMoradia.cidade}</Text>
-                    <Text style={styles.p1}>Bairro: {usuarioMoradia.bairro}</Text>
-                    <Text style={styles.p1}>Rua: {usuarioMoradia.rua}</Text>
-                    <Text style={styles.p1}>Número: {usuarioMoradia.numero}</Text>
-                    <Text style={styles.p1}>Capacidade: {usuarioMoradia.capacidade}</Text>
-                    <Text style={styles.p1}>Aluguel: {usuarioMoradia.aluguel}</Text>
-                </View>
-                
-             : setCarregado ? <Text style={styles.title1}>Você não possui uma moradia</Text> : <Text style={styles.title1}>Carregando</Text>} 
+            <View>
+                <Text style={styles.p1}>Estado: {usuarioMoradia.estado}</Text>
+                <Text style={styles.p1}>Cidade: {usuarioMoradia.cidade}</Text>
+                <Text style={styles.p1}>Bairro: {usuarioMoradia.bairro}</Text>
+                <Text style={styles.p1}>Rua: {usuarioMoradia.rua}</Text>
+                <Text style={styles.p1}>Número: {usuarioMoradia.numero}</Text>
+                <Text style={styles.p1}>Capacidade: {usuarioMoradia.capacidade}</Text>
+                <Text style={styles.p1}>Aluguel: {usuarioMoradia.aluguel}</Text>
+            </View>
+            } 
             {
-            usuarioMoradia != "" ? 
             <View>
                 <ButtonPersonalizado
                 title="Editar Moradia"
-                onPress={ () => console.log("editar moradia") /*navigation.navigate('Editar Moradia')*/ }
+                onPress={ () => navigation.navigate('Editar Moradia') }
                 />
                 <ButtonPersonalizado
                 title="Acessar Moradia"
@@ -95,17 +99,6 @@ const ListaMoradiasScreen = ({route, navigation}) => {
                 onPress={ () => {
                     setModalExcluirVisible(true)
                 } /*navigation.navigate('Excluir Moradia')*/ }
-                />
-            </View>
-             : 
-            <View>
-                <ButtonPersonalizado
-                title="Adicionar Moradia"
-                onPress={ () => navigation.navigate('Cadastrar Moradia') }
-                /> 
-                <ButtonPersonalizado
-                title="Procurar Moradia"
-                onPress={ () => navigation.navigate('Moradias') }
                 />
             </View>
             }
@@ -123,4 +116,4 @@ const ListaMoradiasScreen = ({route, navigation}) => {
     );
 };
 
-export default ListaMoradiasScreen
+export default MenuScreen

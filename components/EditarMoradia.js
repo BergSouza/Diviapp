@@ -19,10 +19,10 @@ const db = getFirestore(app);
 const usuarioService = new UsuarioService
 const moradiaService = new MoradiaService    
 const ibgeService = new IBGEService    
-
-const CadastrarMoradiaScreen = ({route, navigation}) => {
+EditarMoradiaScreen = ({route, navigation}) => {
 
     const [mensagemCadastro, setMensagemCadastro] = useState("");
+    const [idDoc, setIdDoc] = useState("");
     const [rua, setRua] = useState("");
     const [bairro, setBairro] = useState("");
     const [numero, setNumero] = useState("");
@@ -42,23 +42,34 @@ const CadastrarMoradiaScreen = ({route, navigation}) => {
         ibgeService.getEstados((resposta) => {
             setEstados(resposta)
         })
+        moradiaService.buscaMoradiaUsuario(db, auth.currentUser.uid, (resposta) => {
+            // console.log(resposta)
+            setIdDoc(resposta.idDoc)
+            setValueEstados(resposta.idEstado)
+            setValueCidades(resposta.idCidade)
+            setBairro(resposta.bairro)
+            setRua(resposta.rua)
+            setNumero(resposta.numero)
+            setCapacidade(resposta.capacidade)
+            setAluguel(resposta.aluguel)
+        })
     }, [])
 
     useEffect( () => {
         if(valueEstados != null){
             ibgeService.getCidadesPorEstado(valueEstados, (resposta) => {
-                setCidades(resposta)                
+                setCidades(resposta)
             })
         }
     }, [valueEstados])
 
-    
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title1}>{mensagemCadastro}</Text> 
             <Text style={styles.label}>(*) Obrigatório</Text>
             <Text style={styles.label}>* Estado:</Text>
             <DropDownPicker
+                // searchable={true}
                 listMode="MODAL"
                 style={styles.picker}
                 textStyle={styles.picketText}
@@ -72,6 +83,10 @@ const CadastrarMoradiaScreen = ({route, navigation}) => {
             />
             <Text style={styles.label}>* Cidade:</Text>
             <DropDownPicker
+                // disabled={pickerCidadesDisable}
+                // disabledStyle={{
+                //     opacity: 0
+                //   }}
                 searchable={true}
                 listMode="MODAL"
                 style={styles.picker}
@@ -126,8 +141,8 @@ const CadastrarMoradiaScreen = ({route, navigation}) => {
             />
             
             <ButtonPersonalizado
-            title="Adicionar"
-            onPress={ () => moradiaService.cadastrarMoradia(db, auth.currentUser.uid, valueEstados, valueCidades, bairro, rua, numero, capacidade, aluguel, (resposta) => {
+            title="Atualizar"
+            onPress={ () => moradiaService.editarMoradia(db, idDoc, valueEstados, valueCidades, bairro, rua, numero, capacidade, aluguel, (resposta) => {
                 setMensagemCadastro(resposta)
                 if(resposta == true){
                     navigation.navigate('Sua Moradia')
@@ -136,11 +151,13 @@ const CadastrarMoradiaScreen = ({route, navigation}) => {
             />
             <ButtonPersonalizado
             title="Voltar"
-            onPress={ () => navigation.goBack() }
+            onPress={ () => {
+                navigation.goBack()
+            }}
             />
             
         </ScrollView>
     );
 };
 
-export default CadastrarMoradiaScreen
+export default EditarMoradiaScreen

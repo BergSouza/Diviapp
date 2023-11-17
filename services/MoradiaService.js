@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, query, where, } from "firebase/firestore";
+import { collection, addDoc, doc, getDocs, query, where, updateDoc, deleteDoc } from "firebase/firestore";
 import IBGEService from "./IBGEService";
 
 const ibgeService = new IBGEService;
@@ -48,11 +48,64 @@ class MoradiaService{
                     capacidade: capacidade,
                     aluguel: aluguel,
                 }).then((docRef) => {
-                    console.log("Document written with ID: ", docRef.id);
+                    console.log("Documento cadastrado com id: ", docRef.id);
                     console.log(docRef)
                     callback(true)
                 }).catch((e) => {
-                    console.error("Error adding document: ", e);
+                    console.error("Error ao adicionar: ", e);
+                    callback("Erro!");
+                })
+            })
+        })
+    }
+
+    editarMoradia(db, id, idEstado, idCidade, bairro, rua, numero, capacidade, aluguel , callback){
+        if(!idEstado){
+            callback("Por favor, selecione um estado!");
+            return false
+        }
+        if(!idCidade){
+            callback("Por favor, selecione uma cidade!");
+            return false
+        }
+        if(!bairro){
+            callback("Por favor, digite um bairro!");
+            return false
+        }
+        if(!rua){
+            callback("Por favor, digite uma rua!");
+            return false
+        }
+        if(!numero){
+            callback("Por favor, digite um número");
+            return false
+        }
+        if(!capacidade){
+            callback("Por favor, digite a capacidade");
+            return false
+        }
+        if(!aluguel){
+            callback("Por favor, digite o aluguel");
+            return false
+        }
+
+        ibgeService.getEstadoPorId(idEstado, (respostaEstado) => {
+            ibgeService.getCidadePorId(idCidade, (respostaCidade) => {
+                updateDoc(doc(db, "moradia", id), {
+                    idEstado: idEstado,
+                    idCidade: idCidade,
+                    estado: respostaEstado,
+                    cidade: respostaCidade,
+                    bairro: bairro,
+                    rua: rua,
+                    numero: numero,
+                    capacidade: capacidade,
+                    aluguel: aluguel,
+                }).then(() => {
+                    console.log("Documento atualizado!");
+                    callback(true)
+                }).catch((e) => {
+                    console.error("Error ao editar: ", e);
                     callback("Erro!");
                 })
             })
@@ -65,6 +118,7 @@ class MoradiaService{
             const moradias = []
             querySnapshot.forEach((doc) => {
                 moradias.push({
+                    idDoc: doc.id,
                     idEstado: doc.data().idEstado,
                     idCidade: doc.data().idCidade,
                     estado: doc.data().estado,
@@ -93,6 +147,7 @@ class MoradiaService{
         then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 moradia = {
+                    idDoc: doc.id,
                     idEstado: doc.data().idEstado,
                     idCidade: doc.data().idCidade,
                     estado: doc.data().estado,
@@ -111,6 +166,16 @@ class MoradiaService{
             console.log("Erro ao carregar: "+e )
         }));
         callback(moradia)
+    }
+
+    deletarMoradia(db, id, callback){
+        deleteDoc(doc(db, "moradia", id)).
+        then(()=>{
+            callback(true)
+        }).
+        catch(() => {
+            callback("Não foi possível excluir!")
+        });
     }
 }
 
