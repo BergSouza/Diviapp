@@ -6,12 +6,10 @@ import UsuarioService from "../services/UsuarioService";
 import app from '../firebase/firebase_config';
 import { getAuth, getReactNativePersistence } from 'firebase/auth';
 import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
-import { getFirestore } from "firebase/firestore";
 
 const auth = getAuth(app, {
     persistence: getReactNativePersistence(ReactNativeAsyncStorage)  
 });
-const db = getFirestore(app);
 
 const usuarioService = new UsuarioService  
     
@@ -41,6 +39,10 @@ const SemMoradiaScreen = ({route, navigation}) => {
                 title="Procurar Moradia"
                 onPress={ () => navigation.navigate('Moradias') }
                 />
+                <ButtonPersonalizado
+                title="Conversas"
+                onPress={ () => navigation.navigate('Lista Chat') }
+                />
             </View>
             }
             <ButtonPersonalizado
@@ -52,7 +54,7 @@ const SemMoradiaScreen = ({route, navigation}) => {
             
         </View>
         :
-        
+
         <Text>CARREGANDO</Text>
     );
 };

@@ -7,6 +7,9 @@ import CadastrarMoradia from './CadastrarMoradia';
 import Menu from './Menu';
 import SemMoradia from './MenuSemMoradia';
 import EditarMoradia from './EditarMoradia';
+import ContatoMoradia from './ContatoMoradia';
+import ChatPessoal from './ChatPessoal';
+import ListaChat from './ListaChat';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +23,9 @@ const Main = () => {
         <Stack.Screen name="Sua Moradia" component={Menu} options={{ headerShown: false }} />
         <Stack.Screen name="Procurar Moradia" component={SemMoradia} options={{ headerShown: false }} />
         <Stack.Screen name="Editar Moradia" component={EditarMoradia} options={{ headerShown: false }} />
+        <Stack.Screen name="Contato Moradia" component={ContatoMoradia} options={{ headerShown: false }} />
+        <Stack.Screen name="Chat Pessoal" component={ChatPessoal} />
+        <Stack.Screen name="Lista Chat" component={ListaChat} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>)
 }

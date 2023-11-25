@@ -119,6 +119,7 @@ class MoradiaService{
             querySnapshot.forEach((doc) => {
                 moradias.push({
                     idDoc: doc.id,
+                    userId: doc.data().userId,
                     idEstado: doc.data().idEstado,
                     idCidade: doc.data().idCidade,
                     estado: doc.data().estado,

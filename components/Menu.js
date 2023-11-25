@@ -22,6 +22,7 @@ const MenuScreen = ({route, navigation}) => {
 
     const [usuarioMoradia, setUsuarioMoradia] = useState(null)
     const [carregado, setCarregado] = useState(false)
+    const [mensagensNaoLidas, setMensagensNaoLidas] = useState()
     const [modalExcluirVisible, setModalExcluirVisible] = useState(false)
     
     useEffect(() => {
@@ -29,6 +30,9 @@ const MenuScreen = ({route, navigation}) => {
             if(!usuarioService.estadoAutenticacaoMudou){
                 navigation.navigate('Login');
             }
+            usuarioService.verificaMensagensNaoLidas(auth, db, (resposta) => {
+                setMensagensNaoLidas(resposta[0])
+            })
             moradiaService.buscaMoradiaUsuario(db, auth.currentUser.uid, (resposta) => {
                 setUsuarioMoradia(resposta)
                 if(resposta == ""){
@@ -37,6 +41,7 @@ const MenuScreen = ({route, navigation}) => {
                     setCarregado(true)
                 }
             });
+            
         });
         return subscribeFocus;
       }, []);
@@ -86,6 +91,10 @@ const MenuScreen = ({route, navigation}) => {
             } 
             {
             <View>
+                <ButtonPersonalizado
+                title={`Mensagens Recebidas: ${mensagensNaoLidas}`}
+                onPress={ () => navigation.navigate('Lista Chat') }
+                />
                 <ButtonPersonalizado
                 title="Editar Moradia"
                 onPress={ () => navigation.navigate('Editar Moradia') }

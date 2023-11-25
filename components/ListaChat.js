@@ -18,44 +18,44 @@ const db = getFirestore(app);
 const usuarioService = new UsuarioService
 const moradiaService = new MoradiaService    
     
-const ListaMoradiasScreen = ({route, navigation}) => {
+const ListaChatsScreen = ({route, navigation}) => {
 
     const [moradias, setMoradias] = useState([])
     const [carregado, setCarregado] = useState(false)
+    const [usuarios, setUsuarios] = useState()
 
     useEffect(() => {
         if(!usuarioService.estadoAutenticacaoMudou){
             navigation.navigate('Login');
         }
-        moradiaService.buscarMoradias(db, (resposta) => {
-            setMoradias(resposta);
+        usuarioService.verificaMensagensNaoLidas(auth, db, (resposta) => {
+            setUsuarios(resposta[1])
+            setCarregado(true)
         })
-        console.log("moradias")
-        console.log(moradias)
-        setCarregado(true)
-                
+        // console.log(usuarios[1])                
     }, [])
     
     return (
         carregado ?
+        // Object.keys(usuarios).forEach((objeto) => {
+        //     console.log(objeto)
+        //     usuarios[objeto].forEach((a) => {
+        //         console.log(a)
+        //     })
+        // })
         <ScrollView style={styles.container}>
-            {moradias.length > 0 ? moradias.map((moradia, key) => {
+            <Text style={styles.title1}>Chat</Text>
+            <Text style={styles.p1}>(*) Nova Mensagem</Text>
+            {Object.keys(usuarios).length > 0 ? Object.keys(usuarios).map((usuario, key) => {
+                console.log(usuarios[usuario])
                 return (
                     <View key={key}>
-                        <Text style={styles.p1}>Estado: {moradia.estado}</Text>
-                        <Text style={styles.p1}>Cidade: {moradia.cidade}</Text>
-                        <Text style={styles.p1}>Bairro: {moradia.bairro}</Text>
-                        <Text style={styles.p1}>Rua: {moradia.rua}</Text>
-                        <Text style={styles.p1}>Número: {moradia.numero}</Text>
-                        <Text style={styles.p1}>Capacidade: {moradia.capacidade}</Text>
-                        <Text style={styles.p1}>Aluguel: R$ {moradia.aluguel}</Text>
                         <ButtonPersonalizado
-                            title="Entrar em contato"
+                            title={usuarios[usuario].mensagens[0].lida ? usuarios[usuario].usuario : `${usuarios[usuario].usuario} *`}
                             onPress={() =>
-                                navigation.navigate('Contato Moradia', {userIdParams: moradia.userId, moradiaParams: moradia})
+                                navigation.navigate('Chat Pessoal', {autor: auth.currentUser.uid, sender: usuario})
                             }
                         />
-                        <Text style={styles.p1}>------------------------------------------------------------------</Text>
                     </View>
                 );
             }) : <Text style={styles.title1}>Carregando</Text>}
@@ -71,4 +71,4 @@ const ListaMoradiasScreen = ({route, navigation}) => {
     );
 };
 
-export default ListaMoradiasScreen
+export default ListaChatsScreen

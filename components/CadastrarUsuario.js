@@ -8,19 +8,47 @@ import app from '../firebase/firebase_config';
 import { getAuth, getReactNativePersistence } from 'firebase/auth';
 import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
 
+import { getFirestore } from "firebase/firestore";
+
 const auth = getAuth(app, {
     persistence: getReactNativePersistence(ReactNativeAsyncStorage)  
 });
+
+const db = getFirestore(app);
 
 const usuarioService = new UsuarioService();
 
 const CadastrarUsuarioScreen  = ({route, navigation}) => {
     const [mensagemLogin, setMensagemLogin] = useState("");
+    const [nome, setNome] = useState("");
+    const [sobrenome, setSobrenome] = useState("");
+    const [usuario, setUsuario] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     return (
         <View style={styles.container}>
             <Text style={styles.title1}>{mensagemLogin}</Text>
+            <Text style={styles.label}> Usuário:</Text>
+            <TextInput
+                style={styles.input}
+                onChangeText={setUsuario}
+                value={usuario}
+                placeholder="Usuário"
+            />
+            <Text style={styles.label}> Nome:</Text>
+            <TextInput
+                style={styles.input}
+                onChangeText={setNome}
+                value={nome}
+                placeholder="Nome"
+            />
+            <Text style={styles.label}> Sobrenome:</Text>
+            <TextInput
+                style={styles.input}
+                onChangeText={setSobrenome}
+                value={sobrenome}
+                placeholder="Sobrenome"
+            />
             <Text style={styles.label}> Email:</Text>
             <TextInput
                 style={styles.input}
@@ -39,7 +67,7 @@ const CadastrarUsuarioScreen  = ({route, navigation}) => {
         <ButtonPersonalizado
             title="Cadastrar"
             onPress={() =>
-                usuarioService.criarUsuarioComEmailESenha(auth, email, senha, (resposta) => {
+                usuarioService.criarUsuarioComEmailESenha(auth, db, usuario, nome, sobrenome, email, senha, (resposta) => {
                     setMensagemLogin(resposta)
                     if(resposta == true){
                         navigation.navigate('Sua Moradia')
@@ -47,6 +75,10 @@ const CadastrarUsuarioScreen  = ({route, navigation}) => {
                 })
             }
         />
+        <ButtonPersonalizado
+            title="Voltar"
+            onPress={ () => navigation.goBack() }
+            /> 
         </View>
     );
 };
