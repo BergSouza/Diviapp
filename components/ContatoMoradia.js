@@ -52,7 +52,7 @@ const ContatoMoradiacreen = ({route, navigation}) => {
         <Text style={styles.p1}>------------------------------------------------------------------</Text>
         <ButtonPersonalizado
             title="Enviar Mensagem"
-            onPress={ () => navigation.navigate('Chat Pessoal', {autor: moradia.userId, sender: auth.currentUser.uid}) }
+            onPress={ () => navigation.navigate('Chat Pessoal', {autor: userIdParams, sender: auth.currentUser.uid}) }
         /> 
         <ButtonPersonalizado
             title="Voltar"

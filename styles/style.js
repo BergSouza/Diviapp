@@ -1,3 +1,4 @@
+import { reload } from 'firebase/auth';
 import {StyleSheet} from 'react-native'
 
 const styles = StyleSheet.create({
@@ -68,6 +69,21 @@ const styles = StyleSheet.create({
         fontSize: 25,
         marginLeft: 10,
         color: 'rgba(0,0,0,0.5)'
+      },
+      card:{
+        borderWidth: 2,
+        borderColor: 'rgba(0,0,0,0.5)',
+        marginBottom: 10,
+        borderRadius: 10,
+        backgroundColor: '#C3FFF5'
+      },
+      cardTitle:{
+        textAlign: 'center',
+        fontSize: 35
+      },
+      cardTexto: {
+        textAlign: 'center',
+        fontSize: 20
       }
 });
 

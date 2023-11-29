@@ -141,6 +141,51 @@ class MoradiaService{
         ;
     }
 
+    async buscaAvisos(db, moradia, callback){
+        let resposta = []
+        const querySnapshot = await getDocs(collection(db, `avisosMoradia/${moradia}/avisos`)
+        );
+        await querySnapshot.forEach((doc) => {
+            resposta.push({
+                id: doc.id,
+                titulo: doc.data().titulo,
+                texto: doc.data().texto
+            })
+        })
+        callback(resposta)
+    }
+
+    async removerAviso(db, moradia, aviso, callback){
+        deleteDoc(doc(db, `avisosMoradia/${moradia}/avisos`, aviso)).
+        then(()=>{
+            callback(true)
+        }).
+        catch(() => {
+            callback("Não foi possível excluir!")
+        });
+    }
+
+    async adicionarAviso(db, moradia, titulo, texto, callback){
+        if(!titulo){
+            callback("Por favor, digite um título!");
+            return false
+        }
+        if(!texto){
+            callback("Por favor, digite um texto!");
+            return false
+        }
+        addDoc(collection(db, `avisosMoradia/${moradia}/avisos`), {
+            titulo: titulo,
+            texto: texto
+        }).then(() => {
+            console.log("AVISO ADICIONIADO COM SUCESSO!")
+            callback("Adicionado com Sucesso!")
+        }).catch((error) => {
+            console.log("OCORREU UM ERRO AO ADICIONAR O AVISO: "+error)
+            callback("Erro ao Adicionar!")
+        });
+    }
+
     async buscaMoradiaUsuario(db, userId, callback){
         // console.log(userId)
         let moradia = "";

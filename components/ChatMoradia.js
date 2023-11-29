@@ -13,11 +13,9 @@ const db = getFirestore(app);
 const usuarioService = new UsuarioService()
 
 const ChatScreen = ({route, navigation}) => {
-
-    const {autor, sender} = route.params
     
+    const {moradia} = route.params
     const [messages, setMessages] = useState([]);
-    // const [usuarioMoradia, setUsuarioMoradia] = useState();
     const [usuario, setUsuario] = useState();
     const [carregado, setCarregado] = useState(false)
 
@@ -26,8 +24,7 @@ const ChatScreen = ({route, navigation}) => {
             setUsuario(resposta)
             setCarregado(true)
         })
-        usuarioService.atualizaMensagensNaoLidas(auth, db, sender)
-        const unsubscribe = onSnapshot(query(collection(db, `chats/${autor}/${sender}`), orderBy('createdAt', 'desc')), (snapshot) => {
+        const unsubscribe = onSnapshot(query(collection(db, `chatsMoradia/${moradia}/chat`), orderBy('createdAt', 'desc')), (snapshot) => {
           setMessages(
             snapshot.docs.map(doc => ({
               _id: doc.id,
@@ -46,18 +43,12 @@ const ChatScreen = ({route, navigation}) => {
     
       const onSend = async (newMessages = []) => {
         const { _id, createdAt, text, user } = newMessages[0];
-        await addDoc(collection(db, `chats/${autor}/${sender}`), {
-            _id,
-            createdAt,
-            text,
-            user,
+        await addDoc(collection(db, `chatsMoradia/${moradia}/chat`), {
+          _id,
+          createdAt,
+          text,
+          user,
         });
-        await addDoc(collection(db, `mensagensNotificacoes/${autor}/usuario`), {
-            _id,
-            user,
-            lida: false,
-        });
-        usuarioService.salvarConversa(db, sender, autor)
       };
     
       return (

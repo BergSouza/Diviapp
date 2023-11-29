@@ -6,7 +6,6 @@ import UsuarioService from "../services/UsuarioService";
 import app from '../firebase/firebase_config';
 import { getAuth, getReactNativePersistence } from 'firebase/auth';
 import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
-import MoradiaService from "../services/MoradiaService";
 import { getFirestore } from "firebase/firestore";
 
 const auth = getAuth(app, {
@@ -16,26 +15,16 @@ const auth = getAuth(app, {
 const db = getFirestore(app);
 
 const usuarioService = new UsuarioService  
-const moradiaService = new MoradiaService
     
 const SemMoradiaScreen = ({route, navigation}) => {
 
+    const {moradia} = route.params 
     const [carregado, setCarregado] = useState(false)
     
-    const buscaDados = async () => {
+    const buscaDados = async() => {
         if(!usuarioService.estadoAutenticacaoMudou){
             navigation.navigate('Login');
         }
-        await moradiaService.buscarMoradias(db, async (resposta) => {
-            await resposta.forEach(moradia => {
-                usuarioService.buscaMoradores(db, moradia.idDoc, (resposta2) => {
-                    if(resposta2.includes(auth.currentUser.uid)){
-                        navigation.navigate('Moradia', {moradia: moradia})
-                    }
-                })
-            });
-            
-        })
         setCarregado(true)
     }
 
@@ -47,20 +36,25 @@ const SemMoradiaScreen = ({route, navigation}) => {
         carregado ?
         <View style={styles.container}>
             {
-                carregado ? <Text style={styles.title1}>Você não possui uma moradia</Text> : <Text style={styles.title1}>Carregando</Text>} 
+                carregado ? <Text style={styles.title1}>Você possui uma moradia</Text> : <Text style={styles.title1}>Carregando</Text>} 
             {
-            <View>
+            <View> 
+                <View>
+                    <Text style={styles.p1}>Estado: {moradia.estado}</Text>
+                    <Text style={styles.p1}>Cidade: {moradia.cidade}</Text>
+                    <Text style={styles.p1}>Bairro: {moradia.bairro}</Text>
+                    <Text style={styles.p1}>Rua: {moradia.rua}</Text>
+                    <Text style={styles.p1}>Número: {moradia.numero}</Text>
+                    <Text style={styles.p1}>Capacidade: {moradia.capacidade}</Text>
+                    <Text style={styles.p1}>Aluguel: {moradia.aluguel}</Text>
+                </View>
                 <ButtonPersonalizado
-                title="Adicionar Moradia"
-                onPress={ () => navigation.navigate('Cadastrar Moradia') }
-                /> 
-                <ButtonPersonalizado
-                title="Procurar Moradia"
-                onPress={ () => navigation.navigate('Moradias') }
+                title="Acessar Conversa"
+                onPress={ () => navigation.navigate('Chat Moradia', {moradia: moradia.idDoc}) }
                 />
                 <ButtonPersonalizado
-                title="Conversas"
-                onPress={ () => navigation.navigate('Lista Conversas Salvas') }
+                title="Avisos Moradia"
+                onPress={ () => navigation.navigate('Avisos Moradia', {moradia: moradia}) }
                 />
             </View>
             }

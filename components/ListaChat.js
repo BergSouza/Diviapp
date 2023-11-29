@@ -16,45 +16,54 @@ const auth = getAuth(app, {
 const db = getFirestore(app);
 
 const usuarioService = new UsuarioService
-const moradiaService = new MoradiaService    
     
 const ListaChatsScreen = ({route, navigation}) => {
 
-    const [moradias, setMoradias] = useState([])
+    const {moradia} = route.params
     const [carregado, setCarregado] = useState(false)
     const [usuarios, setUsuarios] = useState()
+    const [msgPage, setMsgPage] = useState()
 
-    useEffect(() => {
+    const buscaDados = async () => {
         if(!usuarioService.estadoAutenticacaoMudou){
             navigation.navigate('Login');
         }
-        usuarioService.verificaMensagensNaoLidas(auth, db, (resposta) => {
-            setUsuarios(resposta[1])
-            setCarregado(true)
-        })
-        // console.log(usuarios[1])                
-    }, [])
+        await usuarioService.verificaMensagensNaoLidas(auth, db, async (resposta) => {
+            const mensagens = resposta[1]
+            setUsuarios(mensagens)
+            return true
+            // console.log(convites)
+        })   
+        setCarregado(true)
+    }
+
+    useEffect(() => {
+        buscaDados()        
+    }, [carregado])
     
     return (
         carregado ?
-        // Object.keys(usuarios).forEach((objeto) => {
-        //     console.log(objeto)
-        //     usuarios[objeto].forEach((a) => {
-        //         console.log(a)
-        //     })
-        // })
         <ScrollView style={styles.container}>
             <Text style={styles.title1}>Chat</Text>
+            <Text style={styles.title1}>{msgPage}</Text>
             <Text style={styles.p1}>(*) Nova Mensagem</Text>
             {Object.keys(usuarios).length > 0 ? Object.keys(usuarios).map((usuario, key) => {
-                console.log(usuarios[usuario])
                 return (
-                    <View key={key}>
+                    <View style={styles.card} key={key}>
+                        <Text style={styles.cardTitle}>{usuarios[usuario].mensagens[0].lida ? usuarios[usuario].usuario : `${usuarios[usuario].usuario} *`}</Text>
                         <ButtonPersonalizado
-                            title={usuarios[usuario].mensagens[0].lida ? usuarios[usuario].usuario : `${usuarios[usuario].usuario} *`}
+                            title="Ver conversa"
                             onPress={() =>
                                 navigation.navigate('Chat Pessoal', {autor: auth.currentUser.uid, sender: usuario})
                             }
+                        />
+                        <ButtonPersonalizado
+                            title="Convidar para Moradia"
+                            onPress={() =>
+                                usuarioService.convidaMoradia(db, usuarios[usuario].userId, moradia.idDoc, (resposta) => {
+                                    setMsgPage("Convite enviado com sucesso!")
+                                })
+                            }                               
                         />
                     </View>
                 );

@@ -93,15 +93,23 @@ const MenuScreen = ({route, navigation}) => {
             <View>
                 <ButtonPersonalizado
                 title={`Mensagens Recebidas: ${mensagensNaoLidas}`}
-                onPress={ () => navigation.navigate('Lista Chat') }
+                onPress={ () => navigation.navigate('Lista Chat', {moradia: usuarioMoradia}) }
                 />
                 <ButtonPersonalizado
                 title="Editar Moradia"
                 onPress={ () => navigation.navigate('Editar Moradia') }
                 />
                 <ButtonPersonalizado
-                title="Acessar Moradia"
-                onPress={ () => console.log("acessar moradia") /*navigation.navigate('Moradia')*/ }
+                title="Acessar Conversa"
+                onPress={ () => navigation.navigate('Chat Moradia', {moradia: usuarioMoradia.idDoc}) }
+                />
+                <ButtonPersonalizado
+                title="Avisos Moradia"
+                onPress={ () => navigation.navigate('Avisos Moradia', {moradia: usuarioMoradia}) }
+                />
+                <ButtonPersonalizado
+                title="Moradores"
+                onPress={ () => navigation.navigate('Moradores', {moradia: usuarioMoradia}) }
                 />
                 <ButtonPersonalizado
                 title="Excluir Moradia"

@@ -43,13 +43,13 @@ const LoginScreen = ({route, navigation}) => {
                 title="Logar"
                 onPress={() =>
                     // Usuário Tiringa
-                    usuarioService.logarComEmailESenha(auth, "tiringa@gmail.com", "tiringa", (resposta) => {
-                        navigation.navigate('Sua Moradia')
-                    })
-                    // Usuário Berg
-                    // usuarioService.logarComEmailESenha(auth, "berg@gmail.com", "123456", (resposta) => {
+                    // usuarioService.logarComEmailESenha(auth, "tiringa@gmail.com", "tiringa", (resposta) => {
                     //     navigation.navigate('Sua Moradia')
                     // })
+                    // Usuário Berg
+                    usuarioService.logarComEmailESenha(auth, "berg@gmail.com", "123456", (resposta) => {
+                        navigation.navigate('Sua Moradia')
+                    })
                     // Usuário A
                     // usuarioService.logarComEmailESenha(auth, "a@a.com", "Aaaaaa", (resposta) => {
                     //     navigation.navigate('Sua Moradia')

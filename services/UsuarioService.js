@@ -13,6 +13,112 @@ class UsuarioService{
         });
     }
 
+    async cancelarConvidaMoradia(db, user, moradia, callback){
+        const querySnapshot = await getDocs(query(collection(db, `convitesMoradia`), 
+            where("usuario", "==", user),
+            where("moradia", "==", moradia)
+        ));
+        querySnapshot.forEach((document) => {
+            const docRef = doc(db, `convitesMoradia`, document.id);
+            deleteDoc(docRef).then(() => {    
+                console.log("Convite deletado com sucesso!")
+                callback(true)
+            })
+        })
+    }
+
+    async aceitarConvite(db, user, moradia, callback){
+        this.cancelarConvidaMoradia(db, user, moradia, async (resposta) => {
+            addDoc(collection(db, `moradores/${moradia}/usuario`), {
+                usuario: user,
+            });
+            console.log("CONVITE ACEITO COM SUCESSO!")
+            callback(true)
+        })
+    }
+
+    async buscaMoradores(db, moradia, callback){
+        let resposta = []
+        const querySnapshot = await getDocs((collection(db, `moradores/${moradia}/usuario`)
+        ));
+        await querySnapshot.forEach((doc) => {
+            console.log(doc.data())
+            resposta.push(doc.data().usuario)
+        })
+        callback(resposta)
+    }
+
+    async buscaConvitesMoradiaUsuario(db, user, callback){
+        let resposta = []
+        const querySnapshot = await getDocs(query(collection(db, `convitesMoradia`), 
+            where("usuario", "==", user),
+            where("situacao", "==", "pendente")
+        ));
+        await querySnapshot.forEach((doc) => {
+            console.log("FUNC BUSCA CONVITES")
+            console.log(doc.data())
+            resposta.push(doc.data().moradia);
+        })
+        callback(resposta)
+    }
+
+    async buscaConviteMoradiaUsuario(db, user, moradia, callback){
+        let resposta = "nao enviado";
+        const querySnapshot = await getDocs(query(collection(db, `convitesMoradia`), 
+            where("usuario", "==", user),
+            where("moradia", "==", moradia)
+        ));
+        await querySnapshot.forEach((doc) => {
+            console.log(doc)
+            resposta = (doc.data().situacao);
+        })
+        callback(resposta)
+    }
+
+    async convidaMoradia(db, user, moradia, callback){
+        await this.buscaConviteMoradiaUsuario(db, user, moradia, (resultado) => {
+            if(resultado == "nao enviado"){
+                addDoc(collection(db, `convitesMoradia`), {
+                    usuario: user,
+                    moradia: moradia,
+                    situacao: 'pendente'
+                });
+            }
+        })
+        console.log("Convite enviado com sucesso!")
+        callback(true)
+    }
+
+    async salvarConversa(db, user, moradiaUser){
+        let existe = false;
+        const querySnapshot = await getDocs(query(collection(db, `historicoConversas/${user}/usuario`), 
+            where("usuarioMoradia", "==", moradiaUser)
+        ));
+        await querySnapshot.forEach((doc) => {
+            console.log("HISTóRICO de CONVERSA JA EXISTIA")
+            existe = true
+        })
+        if(!existe){
+            addDoc(collection(db, `historicoConversas/${user}/usuario`), {
+                usuarioMoradia: moradiaUser,
+            });
+        }
+        
+        console.log("HISTóRICO DE CONVERSA SALVO COM SUCESSO!")
+    }
+
+    async buscaConversasHistorico(db, user, feedback){
+        await getDocs(collection(db, `historicoConversas/${user}/usuario`)).
+        then((querySnapshot) => {
+            const conversas = []
+            querySnapshot.forEach((doc) => {
+                conversas.push(doc.data())
+            })
+            // console.log(moradias)
+            feedback(conversas)
+        })
+    }
+
     async atualizaMensagensNaoLidas(auth, db, sender){
         const querySnapshot = await getDocs(
             query(collection(db, `mensagensNotificacoes/${auth.currentUser.uid}/usuario`), where("user._id", "==", sender))
@@ -120,14 +226,19 @@ class UsuarioService{
     }
 
     async getInformacoesUsuario(db, userId, callback){
-        let usuario = null
+        let usuario = {}
         await getDocs(query(collection(db, "users"), where("userId", "==", userId))).
         then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-                // usuario = doc.data().usuario
-                callback(doc.data())
-                return true
+                usuario = {
+                    nome: doc.data().nome,
+                    sobrenome: doc.data().sobrenome,
+                    userId: doc.data().userId,
+                    usuario: doc.data().usuario,
+                }
             })
+            // console.log(usuario)
+            callback(usuario)
         })
         .catch((e => {
             console.log("Erro ao carregar: "+e )
