@@ -46,22 +46,22 @@ const LoginScreen = ({route, navigation}) => {
                     //     navigation.navigate('Sua Moradia')
                     // })
                     // Usuário Berg
-                    usuarioService.logarComEmailESenha(auth, "berg@gmail.com", "123456", (resposta) => {
-                        navigation.navigate('Sua Moradia')
-                    })
+                    // usuarioService.logarComEmailESenha(auth, "berg@gmail.com", "123456", (resposta) => {
+                    //     navigation.navigate('Sua Moradia')
+                    // })
                     // Usuário A
                     // usuarioService.logarComEmailESenha(auth, "a@a.com", "Aaaaaa", (resposta) => {
                     //     navigation.navigate('Sua Moradia')
                     // })
                     // DESLOGADO
-                    // usuarioService.logarComEmailESenha(auth, email, senha, (resposta) => {
-                    //     if(resposta == true){
-                    //         setMensagemLogin("")
-                    //         navigation.navigate('Sua Moradia')
-                    //     }else{
-                    //         setMensagemLogin(resposta)
-                    //     }
-                    // })
+                    usuarioService.logarComEmailESenha(auth, email, senha, (resposta) => {
+                        if(resposta == true){
+                            setMensagemLogin("")
+                            navigation.navigate('Sua Moradia')
+                        }else{
+                            setMensagemLogin(resposta)
+                        }
+                    })
                 }
             />
             <Text style={{textAlign: 'center', fontSize: 30}}>Esqueceu sua senha?</Text>

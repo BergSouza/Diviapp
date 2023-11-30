@@ -24,8 +24,6 @@ const ListaMoradiasScreen = ({route, navigation}) => {
         moradiaService.buscarMoradias(db, (resposta) => {
             setMoradias(resposta);
         })
-        console.log("moradias")
-        console.log(moradias)
         setCarregado(true)
                 
     }, [])
