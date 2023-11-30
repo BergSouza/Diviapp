@@ -1,10 +1,10 @@
 import {React, useEffect, useState} from "react";
-import {View, Text, TextInput, Modal, Pressable} from 'react-native'
+import {View, Text, Modal} from 'react-native'
 import ButtonPersonalizado from "./ButtonPersonalizado";
 import styles from "../styles/style";
 import UsuarioService from "../services/UsuarioService";
 import MoradiaService from "../services/MoradiaService";
-
+import ChatService from "../services/ChatService";
 import app from '../firebase/firebase_config';
 import { getAuth, getReactNativePersistence } from 'firebase/auth';
 import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
@@ -17,6 +17,7 @@ const db = getFirestore(app);
 
 const usuarioService = new UsuarioService
 const moradiaService = new MoradiaService    
+const chatService = new ChatService
     
 const MenuScreen = ({route, navigation}) => {
 
@@ -30,7 +31,7 @@ const MenuScreen = ({route, navigation}) => {
             if(!usuarioService.estadoAutenticacaoMudou){
                 navigation.navigate('Login');
             }
-            usuarioService.verificaMensagensNaoLidas(auth, db, (resposta) => {
+            chatService.verificaMensagensNaoLidas(auth, db, (resposta) => {
                 setMensagensNaoLidas(resposta[0])
             })
             moradiaService.buscaMoradiaUsuario(db, auth.currentUser.uid, (resposta) => {
@@ -54,7 +55,6 @@ const MenuScreen = ({route, navigation}) => {
                 transparent={true}
                 visible={modalExcluirVisible}
                 onRequestClose={() => {
-                // Alert.alert('Modal has been closed.');
                 setModalExcluirVisible(!modalExcluirVisible);
                 }}>
                 <View style={styles.centeredView}>
@@ -115,7 +115,7 @@ const MenuScreen = ({route, navigation}) => {
                 title="Excluir Moradia"
                 onPress={ () => {
                     setModalExcluirVisible(true)
-                } /*navigation.navigate('Excluir Moradia')*/ }
+                }}
                 />
             </View>
             }

@@ -1,9 +1,8 @@
-import {React, useEffect, useState} from "react";
+import {React, useState} from "react";
 import {View, Text, TextInput} from 'react-native'
 import ButtonPersonalizado from "./ButtonPersonalizado";
 import UsuarioService from "../services/UsuarioService";
 import styles from "../styles/style";
-
 import app from '../firebase/firebase_config';
 import {getAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,7 +26,7 @@ const LoginScreen = ({route, navigation}) => {
             <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
-                // value={email}
+                value={email}
                 placeholder="Email"
                 
             />
@@ -35,7 +34,7 @@ const LoginScreen = ({route, navigation}) => {
             <TextInput
                 style={styles.input}
                 onChangeText={setSenha}
-                // value={senha}
+                value={senha}
                 placeholder="Senha"
                 secureTextEntry
             />

@@ -4,14 +4,8 @@ import ButtonPersonalizado from "./ButtonPersonalizado";
 import styles from "../styles/style";
 import UsuarioService from "../services/UsuarioService";
 import app from '../firebase/firebase_config';
-import { getAuth, getReactNativePersistence } from 'firebase/auth';
-import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
 import { getFirestore } from "firebase/firestore";
 import MoradiaService from "../services/MoradiaService";
-
-const auth = getAuth(app, {
-    persistence: getReactNativePersistence(ReactNativeAsyncStorage)  
-});
 
 const db = getFirestore(app);
 
@@ -29,41 +23,43 @@ const MoradoresScreen = ({route, navigation}) => {
         if(!usuarioService.estadoAutenticacaoMudou){
             navigation.navigate('Login');
         }
-        await usuarioService.buscaMoradores(db, moradia.idDoc, async (resposta) => {
-            let moradores = {}
-            console.log("resposta")
-            console.log(resposta)
-            await resposta.forEach(async (morador) => {
+        let moradores = []
+        await moradiaService.buscaMoradores(db, moradia.idDoc, async (resposta) => {
+            await resposta.forEach(async (morador, index) => {
                 await usuarioService.getInformacoesUsuario(db, morador, (resultado) => {
-                    console.log(resultado)
-                    moradores[resultado.userId] = resultado
-                    setCarregado(true)
+                    moradores.push(resultado)
                 })
+                if(index == resposta.length-1){
+                    setCarregado(true)
+                }
             });
             setMoradores(moradores)
         })
     }
 
     useEffect(() => {
-      }, [carregado]);
+        buscaDados()
+      }, []);
     
     return (
         carregado ?
         <View style={styles.container}>
             {
             <View> 
-                {Object.keys(moradores).length > 0 ? Object.keys(moradores).map((morador, key) => {
-                    console.log((moradores))
+                {moradores.length > 0 ? moradores.map((morador, key) => {
                 return (
                     <View style={styles.card} key={key}>
-                        <Text>aosmdoamsd</Text>
+                        <Text style={styles.title1}>{morador.usuario}</Text><ButtonPersonalizado
+                        title="Remover"
+                        onPress={ () => chatService.removerMorador(db, moradia.idDoc, morador.userId, (resposta) => {
+                            if(resposta){
+                                navigation.goBack()
+                            }
+                        })}
+                        />
                     </View>
                 );
-            }) : <Text style={styles.title1}>Sem Avisos</Text>}
-                <ButtonPersonalizado
-                title="Adicionar Aviso"
-                onPress={ () => navigation.navigate('Adicionar Aviso', {moradia: moradia.idDoc}) }
-                />
+            }) : <Text style={styles.title1}>Sem Moradores</Text>}
             </View>
             }
             <ButtonPersonalizado

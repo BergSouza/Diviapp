@@ -1,9 +1,8 @@
 import { GiftedChat } from 'react-native-gifted-chat'
-import { useCallback, useEffect, useState } from "react";
-import {ScrollView, View, Text, TextInput} from 'react-native'
+import { useEffect, useState } from "react";
+import { View, Text } from 'react-native'
 import { getAuth } from 'firebase/auth';
 import { collection, addDoc,onSnapshot, query,orderBy } from "firebase/firestore";
-
 import app from '../firebase/firebase_config';
 import { getFirestore } from "firebase/firestore";
 import UsuarioService from '../services/UsuarioService';
@@ -39,7 +38,7 @@ const ChatScreen = ({route, navigation}) => {
         });
     
         return () => unsubscribe();
-      }, []); // Executado apenas uma vez ao montar o componente
+      }, []);
     
       const onSend = async (newMessages = []) => {
         const { _id, createdAt, text, user } = newMessages[0];

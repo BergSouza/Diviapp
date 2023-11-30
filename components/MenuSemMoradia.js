@@ -28,7 +28,7 @@ const SemMoradiaScreen = ({route, navigation}) => {
         }
         await moradiaService.buscarMoradias(db, async (resposta) => {
             await resposta.forEach(moradia => {
-                usuarioService.buscaMoradores(db, moradia.idDoc, (resposta2) => {
+                moradiaService.buscaMoradores(db, moradia.idDoc, (resposta2) => {
                     if(resposta2.includes(auth.currentUser.uid)){
                         navigation.navigate('Moradia', {moradia: moradia})
                     }

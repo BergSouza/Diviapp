@@ -2,7 +2,6 @@ import {React, useState} from "react";
 import {View, Text, TextInput} from 'react-native'
 import ButtonPersonalizado from "./ButtonPersonalizado";
 import styles from "../styles/style";
-
 import UsuarioService from "../services/UsuarioService";
 import app from '../firebase/firebase_config';
 import { getAuth, getReactNativePersistence } from 'firebase/auth';

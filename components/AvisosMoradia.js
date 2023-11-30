@@ -4,14 +4,9 @@ import ButtonPersonalizado from "./ButtonPersonalizado";
 import styles from "../styles/style";
 import UsuarioService from "../services/UsuarioService";
 import app from '../firebase/firebase_config';
-import { getAuth, getReactNativePersistence } from 'firebase/auth';
-import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
 import { getFirestore } from "firebase/firestore";
 import MoradiaService from "../services/MoradiaService";
 
-const auth = getAuth(app, {
-    persistence: getReactNativePersistence(ReactNativeAsyncStorage)  
-});
 
 const db = getFirestore(app);
 
@@ -30,7 +25,6 @@ const AvisosMoradiaScreen = ({route, navigation}) => {
             navigation.navigate('Login');
         }
         moradiaService.buscaAvisos(db, moradia.idDoc, (resposta) => {
-            console.log(resposta)
             setAvisos(resposta)
             setCarregado(true)
         })
@@ -48,7 +42,6 @@ const AvisosMoradiaScreen = ({route, navigation}) => {
             {
             <View> 
                 {avisos.length > 0 ? avisos.map((aviso, key) => {
-                    console.log(Object.keys(aviso))
                 return (
                     <View style={styles.card} key={key}>
                         <Text style={styles.cardTitle}>{aviso.titulo}</Text>

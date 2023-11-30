@@ -3,8 +3,6 @@ import {ScrollView, View, Text, TextInput} from 'react-native'
 import ButtonPersonalizado from "./ButtonPersonalizado";
 import styles from "../styles/style";
 import UsuarioService from "../services/UsuarioService";
-import MoradiaService from "../services/MoradiaService";
-
 import app from '../firebase/firebase_config';
 import { getAuth, getReactNativePersistence } from 'firebase/auth';
 import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
@@ -15,8 +13,7 @@ const auth = getAuth(app, {
 });
 const db = getFirestore(app);
 
-const usuarioService = new UsuarioService
-const moradiaService = new MoradiaService    
+const usuarioService = new UsuarioService 
     
 const ContatoMoradiacreen = ({route, navigation}) => {
 
@@ -26,7 +23,6 @@ const ContatoMoradiacreen = ({route, navigation}) => {
     const [carregado, setCarregado] = useState(false)
 
     useEffect(() => {
-        // setMoradia(moradiaParams)
         if(!usuarioService.estadoAutenticacaoMudou){
             navigation.navigate('Login');
         }

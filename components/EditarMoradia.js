@@ -6,11 +6,11 @@ import styles from "../styles/style";
 import UsuarioService from "../services/UsuarioService";
 import MoradiaService from "../services/MoradiaService";
 import IBGEService from "../services/IBGEService";
-
 import app from '../firebase/firebase_config';
 import { getAuth, getReactNativePersistence } from 'firebase/auth';
 import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
 import { getFirestore } from "firebase/firestore";
+
 const auth = getAuth(app, {
     persistence: getReactNativePersistence(ReactNativeAsyncStorage)  
 });
@@ -34,6 +34,7 @@ EditarMoradiaScreen = ({route, navigation}) => {
     const [cidades, setCidades] = useState([]);
     const [openCidades, setOpenCidades] = useState(false);
     const [valueCidades, setValueCidades] = useState(null);
+    const [carregado, setCarregado] = useState(false);
 
     useEffect(() => {
         if(!usuarioService.estadoAutenticacaoMudou){
@@ -43,7 +44,6 @@ EditarMoradiaScreen = ({route, navigation}) => {
             setEstados(resposta)
         })
         moradiaService.buscaMoradiaUsuario(db, auth.currentUser.uid, (resposta) => {
-            // console.log(resposta)
             setIdDoc(resposta.idDoc)
             setValueEstados(resposta.idEstado)
             setValueCidades(resposta.idCidade)
@@ -52,6 +52,7 @@ EditarMoradiaScreen = ({route, navigation}) => {
             setNumero(resposta.numero)
             setCapacidade(resposta.capacidade)
             setAluguel(resposta.aluguel)
+            setCarregado(true)
         })
     }, [])
 
@@ -64,12 +65,12 @@ EditarMoradiaScreen = ({route, navigation}) => {
     }, [valueEstados])
 
     return (
+        carregado ?
         <ScrollView style={styles.container}>
             <Text style={styles.title1}>{mensagemCadastro}</Text> 
             <Text style={styles.label}>(*) Obrigatório</Text>
             <Text style={styles.label}>* Estado:</Text>
             <DropDownPicker
-                // searchable={true}
                 listMode="MODAL"
                 style={styles.picker}
                 textStyle={styles.picketText}
@@ -83,10 +84,6 @@ EditarMoradiaScreen = ({route, navigation}) => {
             />
             <Text style={styles.label}>* Cidade:</Text>
             <DropDownPicker
-                // disabled={pickerCidadesDisable}
-                // disabledStyle={{
-                //     opacity: 0
-                //   }}
                 searchable={true}
                 listMode="MODAL"
                 style={styles.picker}
@@ -157,6 +154,8 @@ EditarMoradiaScreen = ({route, navigation}) => {
             />
             
         </ScrollView>
+        :
+        <Text>Carregando</Text>
     );
 };
 

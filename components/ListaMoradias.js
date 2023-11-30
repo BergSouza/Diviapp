@@ -1,18 +1,12 @@
 import {React, useEffect, useState} from "react";
-import {ScrollView, View, Text, TextInput} from 'react-native'
+import {ScrollView, View, Text} from 'react-native'
 import ButtonPersonalizado from "./ButtonPersonalizado";
 import styles from "../styles/style";
 import UsuarioService from "../services/UsuarioService";
 import MoradiaService from "../services/MoradiaService";
-
 import app from '../firebase/firebase_config';
-import { getAuth, getReactNativePersistence } from 'firebase/auth';
-import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
 import { getFirestore } from "firebase/firestore";
 
-const auth = getAuth(app, {
-    persistence: getReactNativePersistence(ReactNativeAsyncStorage)  
-});
 const db = getFirestore(app);
 
 const usuarioService = new UsuarioService

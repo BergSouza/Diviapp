@@ -223,6 +223,30 @@ class MoradiaService{
             callback("Não foi possível excluir!")
         });
     }
+
+    async buscaMoradores(db, moradia, callback){
+        let resposta = []
+        const querySnapshot = await getDocs((collection(db, `moradores/${moradia}/usuario`)
+        ));
+        await querySnapshot.forEach((doc) => {
+            console.log(doc.data())
+            resposta.push(doc.data().usuario)
+        })
+        callback(resposta)
+    }
+
+    async removerMorador(db, moradia, usuario, callback){
+        const querySnapshot = await getDocs(query(collection(db, `moradores/${moradia}/usuario`), 
+        where("usuario", "==", usuario)
+    ));
+    querySnapshot.forEach((document) => {
+        const docRef = doc(db, `moradores/${moradia}/usuario`, document.id);
+        deleteDoc(docRef).then(() => {    
+            console.log("Usuario deletado com sucesso!")
+            callback(true)
+        })
+    })
+    }
 }
 
 export default MoradiaService

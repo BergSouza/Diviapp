@@ -2,18 +2,9 @@ import {React, useState} from "react";
 import {View, Text, TextInput} from 'react-native'
 import ButtonPersonalizado from "./ButtonPersonalizado";
 import styles from "../styles/style";
-
-import UsuarioService from "../services/UsuarioService";
 import app from '../firebase/firebase_config';
-import { getAuth, getReactNativePersistence } from 'firebase/auth';
-import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
-
 import { getFirestore } from "firebase/firestore";
 import MoradiaService from "../services/MoradiaService";
-
-const auth = getAuth(app, {
-    persistence: getReactNativePersistence(ReactNativeAsyncStorage)  
-});
 
 const db = getFirestore(app);
 
@@ -38,7 +29,7 @@ const CadastraAvisoScreen  = ({route, navigation}) => {
             <Text style={styles.label}> Texto:</Text>
             <TextInput
                 multiline = {true}
-                numberOfLines = {4}
+                numberOfLines = {8}
                 style={styles.input}
                 onChangeText={setTexto}
                 value={texto}

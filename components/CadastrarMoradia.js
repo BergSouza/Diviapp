@@ -6,7 +6,6 @@ import styles from "../styles/style";
 import UsuarioService from "../services/UsuarioService";
 import MoradiaService from "../services/MoradiaService";
 import IBGEService from "../services/IBGEService";
-
 import app from '../firebase/firebase_config';
 import { getAuth, getReactNativePersistence } from 'firebase/auth';
 import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";

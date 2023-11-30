@@ -1,9 +1,9 @@
 import { GiftedChat } from 'react-native-gifted-chat'
-import { useCallback, useEffect, useState } from "react";
-import {ScrollView, View, Text, TextInput} from 'react-native'
+import { useEffect, useState } from "react";
+import { View, Text } from 'react-native'
 import { getAuth } from 'firebase/auth';
 import { collection, addDoc,onSnapshot, query,orderBy } from "firebase/firestore";
-
+import ChatService from '../services/ChatService';
 import app from '../firebase/firebase_config';
 import { getFirestore } from "firebase/firestore";
 import UsuarioService from '../services/UsuarioService';
@@ -11,13 +11,13 @@ import UsuarioService from '../services/UsuarioService';
 const auth = getAuth(app);
 const db = getFirestore(app);
 const usuarioService = new UsuarioService()
+const chatService = new ChatService()
 
 const ChatScreen = ({route, navigation}) => {
 
     const {autor, sender} = route.params
     
     const [messages, setMessages] = useState([]);
-    // const [usuarioMoradia, setUsuarioMoradia] = useState();
     const [usuario, setUsuario] = useState();
     const [carregado, setCarregado] = useState(false)
 
@@ -42,7 +42,7 @@ const ChatScreen = ({route, navigation}) => {
         });
     
         return () => unsubscribe();
-      }, []); // Executado apenas uma vez ao montar o componente
+      }, []);
     
       const onSend = async (newMessages = []) => {
         const { _id, createdAt, text, user } = newMessages[0];
@@ -57,7 +57,7 @@ const ChatScreen = ({route, navigation}) => {
             user,
             lida: false,
         });
-        usuarioService.salvarConversa(db, sender, autor)
+        chatService.salvarConversa(db, sender, autor)
       };
     
       return (

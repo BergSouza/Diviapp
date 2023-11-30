@@ -1,10 +1,9 @@
 import {React, useEffect, useState} from "react";
-import {ScrollView, View, Text, TextInput} from 'react-native'
+import {ScrollView, View, Text} from 'react-native'
 import ButtonPersonalizado from "./ButtonPersonalizado";
 import styles from "../styles/style";
 import UsuarioService from "../services/UsuarioService";
-import MoradiaService from "../services/MoradiaService";
-
+import ChatService from "../services/ChatService";
 import app from '../firebase/firebase_config';
 import { getAuth, getReactNativePersistence } from 'firebase/auth';
 import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
@@ -16,6 +15,7 @@ const auth = getAuth(app, {
 const db = getFirestore(app);
 
 const usuarioService = new UsuarioService
+const chatService = new ChatService
     
 const ListaChatsScreen = ({route, navigation}) => {
 
@@ -28,11 +28,10 @@ const ListaChatsScreen = ({route, navigation}) => {
         if(!usuarioService.estadoAutenticacaoMudou){
             navigation.navigate('Login');
         }
-        await usuarioService.verificaMensagensNaoLidas(auth, db, async (resposta) => {
+        await chatService.verificaMensagensNaoLidas(auth, db, async (resposta) => {
             const mensagens = resposta[1]
             setUsuarios(mensagens)
             return true
-            // console.log(convites)
         })   
         setCarregado(true)
     }

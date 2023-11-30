@@ -6,6 +6,7 @@ import UsuarioService from "../services/UsuarioService";
 import app from '../firebase/firebase_config';
 import { getAuth, getReactNativePersistence } from 'firebase/auth';
 import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
+import MoradiaService from "../services/MoradiaService";
 import { getFirestore } from "firebase/firestore";
 
 const auth = getAuth(app, {
@@ -15,8 +16,9 @@ const auth = getAuth(app, {
 const db = getFirestore(app);
 
 const usuarioService = new UsuarioService  
+const moradiaService = new MoradiaService
     
-const SemMoradiaScreen = ({route, navigation}) => {
+const ComMoradiaScreen = ({route, navigation}) => {
 
     const {moradia} = route.params 
     const [carregado, setCarregado] = useState(false)
@@ -53,6 +55,12 @@ const SemMoradiaScreen = ({route, navigation}) => {
                 onPress={ () => navigation.navigate('Chat Moradia', {moradia: moradia.idDoc}) }
                 />
                 <ButtonPersonalizado
+                title="Sair da Moradia"
+                onPress={ () => moradiaService.removerMorador(db, moradia.idDoc, auth.currentUser.uid, (resposta) => {
+                    navigation.navigate('Procurar Moradia')
+                }) }
+                />
+                <ButtonPersonalizado
                 title="Avisos Moradia"
                 onPress={ () => navigation.navigate('Avisos Moradia', {moradia: moradia}) }
                 />
@@ -72,4 +80,4 @@ const SemMoradiaScreen = ({route, navigation}) => {
     );
 };
 
-export default SemMoradiaScreen
+export default ComMoradiaScreen
